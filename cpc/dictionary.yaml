@@ -1,0 +1,80 @@
+swagger: '2.0'
+info:
+  description: 这是一个快检对接业务 API
+  version: 1.0.0
+  title: 字典API
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: huanghongshu@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+host: localhost:3001
+basePath: '/OpenAPI'
+tags:
+  - name: POCT
+    description: 快检对接业务需要的字典
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+paths:
+  /DataDictionaryWrapper/GetPOCTDeviceTypes:
+    post:
+      tags:
+        - Dictionary
+      responses:
+        200:
+          description: 获取设备类型下拉响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    additionalProperties:
+                      type: string
+  /DataDictionaryWrapper/GetAssistItems:
+    post:
+      tags:
+        - Dictionary
+      responses:
+        200:
+          description: 获取辅助检查项目下拉响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    additionalProperties:
+                      type: string
+
+  /DataDictionaryWrapper/GetUnits:
+    post:
+      tags:
+        - Dictionary
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              key:
+                type: string
+                description: 快检辅助项目入参
+      responses:
+        200:
+          description: 获取辅助检查项目单位下拉响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    additionalProperties:
+                      type: string
+

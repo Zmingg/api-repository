@@ -1,0 +1,67 @@
+swagger: '2.0'
+info:
+  description: Mockware
+  version: 1.0.0
+  title: Mockware
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: xuwei@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+host: apispec.aecg.com.cn
+basePath: '/api/mockware'
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+
+paths:
+  /start:
+    get:
+      description: Start mockware instance
+      parameters:
+        - name: id
+          in: query
+          type: string
+          description: Schema id
+          required: true
+      responses:
+        200:
+          description: Response of mockware instances list
+
+  /stop:
+    get:
+      description: Stop mockware instance
+      parameters:
+        - name: id
+          in: query
+          type: string
+          description: Schema id
+          required: true
+      responses:
+        200:
+          description: Response of mockware instances list
+
+  /restart:
+    get:
+      description: Restart mockware
+      parameters:
+        - name: id
+          in: query
+          type: string
+          description: Mockware id
+          required: true
+      responses:
+        200:
+          description: Return true if succeed
+
+  /instances:
+    get:
+      description: List mockware instances
+      responses:
+        200:
+          description: Response of mockware instances list

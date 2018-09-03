@@ -1,0 +1,395 @@
+swagger: '2.0'
+info:
+  description: 时间采集器 腕带管理 API
+  version: 1.0.0
+  title: 时间采集器 Web API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: zhangyun@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+host: 'www.aecg.com.cn:3002'
+basePath: /OpenAPI
+tags:
+  - name: TimeCollect
+    description: 胸痛时间采集器业务
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+paths:
+
+  /Tag/GetTagPager:
+    post:
+      tags:
+        - Tag
+      summary: 腕带列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              queryTag:
+                type: object
+                properties:
+                  Keyword:
+                    type: string
+                    description: 腕带编号
+                  PageSize:
+                    type: integer
+                    description: 每页条数
+                  PageIndex:
+                    type: integer
+                    description: 表示第几页
+      responses:
+        '200':
+          description: 腕带列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                      - properties:
+                          List:
+                            type: array
+                            items:
+                              $ref: '#/definitions/Tag'
+
+  /TagActiveLog/GetTagActiveLogPager:
+    post:
+      tags:
+        - TagActive
+      summary: 腕带激活（腕带流水）列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              queryTagActive:
+                type: object
+                properties:
+                  Code:
+                    type: string
+                    description: 腕带编号
+                  StartTime:
+                    type: string
+                    description: 开始时间
+                  EndTime:
+                    type: string
+                    description: 结束时间
+                  PageSize:
+                    type: integer
+                    description: 每页条数
+                  PageIndex:
+                    type: integer
+                    description: 表示第几页
+      responses:
+        '200':
+          description: 腕带列表（腕带流水）响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                      - properties:
+                          List:
+                            type: array
+                            items:
+                              $ref: '#/definitions/TagActive'
+
+  /Tag/GetTags:
+    post:
+      tags:
+        - Tag
+      summary: 腕带列表
+      responses:
+        '200':
+          description: 腕带列表响应，不分页
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Tag'
+
+  /Tag/ExportTagFlowLog:
+    get:
+      tags:
+        - TagLog
+      summary: 导出采集日志
+      consumes:
+        - multipart/form-data
+      produces:
+        - multipart/form-data
+      parameters:
+        - name: ids
+          in: query
+          type: string
+          description: 基站主键列表，以逗号分隔
+        - name: startTime
+          in: query
+          type: string
+          description: 开始时间
+        - name: endTime
+          in: query
+          type: string
+          description: 结束时间
+      responses:
+        '200':
+          description: 导出采集日志响应
+          headers:
+            Content-Disposition:
+              description: Content-Disposition attachment;filename=filenamxx
+              type: string
+          schema:
+            type: file
+
+  /Tag/GetTag:
+    post:
+      tags:
+        - Tag
+      summary: 查询腕带
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 腕带主键
+      responses:
+        '200':
+          description: 腕带查询响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    allOf:
+                      - $ref: '#/definitions/Tag'
+
+  /Tag/AddTag:
+    post:
+      tags:
+        - Tag
+      summary: 新增腕带
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              tag:
+                type: object
+                properties:
+                  TagCode:
+                    type: string
+                    description: 腕带编号
+                  TagDes:
+                    type: string
+                    description: 腕带描述或备注
+      responses:
+        '200':
+          description: 腕带新增响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+  /Tag/UpdateTag:
+    post:
+      tags:
+        - Tag
+      summary: 编辑腕带
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              tag:
+                type: object
+                properties:
+                  Id:
+                    type: string
+                    description: 腕带主键
+                  TagCode:
+                    type: string
+                    description: 腕带编号
+                  TagDes:
+                    type: string
+                    description: 腕带描述或备注
+      responses:
+        '200':
+          description: 腕带编辑响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+  /Tag/DeleteTag:
+    post:
+      tags:
+        - Tag
+      summary: 删除腕带
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 腕带主键
+      responses:
+        '200':
+          description: 腕带删除响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+  /Tag/GetTagCollectRecord:
+    post:
+      tags:
+        - Tag
+      summary: 24小时腕带记录列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 腕带激活数据的key
+      responses:
+        '200':
+          description: 24小时腕带记录列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/TagCollectRecord'
+
+
+definitions:
+
+  Tag:
+    type: object
+    description: '腕带返回列表对象'
+    properties:
+      Id:
+        type: string
+        description: 唯一标识Id
+      TagCode:
+        type: string
+        description: 腕带编号
+      TagBattery:
+        type: string
+        description: 腕带电量
+      TagMinutes:
+        type: string
+        description: 腕带电量更新时间分钟数
+      TagDes:
+        type: string
+        description: 腕带描述或备注
+
+  TagActive:
+    type: object
+    description: '腕带返回列表对象'
+    properties:
+      Id:
+        type: string
+        description: 唯一标识Id
+      TagCode:
+        type: string
+        description: 腕带编号
+      TagOnTime:
+        type: string
+        description: 激活时间
+      TagOffTime:
+        type: string
+        description: 关闭时间
+      CaseReportFormId:
+        type: string
+        description: 胸痛档案id 没有绑定胸痛表单的为空字符串或 null
+      PatientName:
+        type: string
+        description: 胸痛档案患者姓名 没有绑定胸痛表单的为空字符串或 null
+
+  TagCollectRecord:
+    allOf:
+      - $ref: '#/definitions/Tag'
+      - type: object
+        description: '24小时腕带记录返回列表对象'
+        properties:
+          TagCollectRecords:
+            type: array
+            description: 腕带激活记录
+            items:
+              $ref: '#/definitions/TagCollectRecords'
+
+  TagCollectRecords:
+    type: object
+    description: '腕带一次激活记录对象'
+    properties:
+      Id:
+        type: string
+        description: 唯一标识Id,激活记录key
+      AreaChangeLogs:
+        type: array
+        description: 腕带记录列表
+        items:
+          $ref: '#/definitions/AreaChangeLogs'
+
+  AreaChangeLogs:
+    type: object
+    description: '腕带一次关键点记录对象'
+    properties:
+      Id:
+        type: string
+        description: 唯一标识Id,关键点记录key
+      AreaName:
+        type: string
+        description: 区域名称
+      RoomName:
+        type: string
+        description: 关键点名称
+      EventType:
+        type: string
+        description: 事件类型
+      AreaId:
+        type: string
+        description: 事件主区域主键
+      NeighborAreaId:
+        type: string
+        description: 邻近区域主键
+      EventTime:
+        type: string
+        description: 事件发生时间

@@ -1,0 +1,83 @@
+swagger: '2.0'
+info:
+  description: 胸痛档案关键指标 API
+  version: 1.0.0
+  title: Cppmas Web API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: zhangyun@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+host: 'www.aecg.com.cn:3002'
+basePath: /StatisticsOpenAPI
+tags:
+  - name: EmergencyTime
+    description: 胸痛关键指标业务
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+paths:
+
+  /PersonalKeyIndicator/GetPersonalKeyIndicatorsOfStandardEdition:
+    post:
+      tags:
+        - PersonalKeyIndicator
+      summary: 关键指标标准版
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 胸痛档案ID
+      responses:
+        '200':
+          description: 关键指标标准版列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/KeyIndicatorStandardEdition'
+
+
+definitions:
+
+  KeyIndicatorStandardEdition:
+    type: object
+    properties:
+      AuthenticationTargetBaseID:
+        type: string
+        description: 主键
+      AuthItemCode:
+        type: string
+        description: 指标项
+      AuthItemDesc:
+        type: string
+        description: 指标内容
+      SelectionCondition:
+        type: string
+        description: 入选条件
+      ReferStandard:
+        type: int
+        description: 参考条件
+      StatisticalAlgorithm:
+        type: string
+        description: 统计算法
+      Inclusion:
+        type: boolean
+        description: 是否入选
+      StatisticsValue:
+        type: int
+        description: 统计值
+      Prompt:
+        type: string
+        description: 统计明细

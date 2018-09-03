@@ -1,0 +1,1156 @@
+swagger: '2.0'
+info:
+  description: 手术登记信息API
+  version: 1.0.0
+  title: 手术登记信息API
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: wangzhongxiao@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+basePath: '/SIROpenAPI'
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: UserAccount
+    description: 用户账号管理
+  - name: AgentData
+    description: 获取其他服务数据
+  - name: OperationRecord
+    description: 手术记录
+  - name: OperationRecordDetail
+    description: 手术记录详情
+schemes:
+  - http
+paths:
+  /UserAccount/Login:
+    post:
+      tags:
+        - UserAccount
+      summary: 登录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              userName:
+                 type: string
+                 description: 登录名
+              password:
+                  type: string
+                  description: 密码
+      responses:
+        200:
+          description: 登录返回对象
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    $ref: '#/definitions/UserInfo'
+  /Agentdata/GetDictionaryData:
+    post:
+      tags:
+        - AgentData
+      summary: 获取字典数据
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              codes:
+                type: array
+                description: 字典编码
+                items: 
+                  type: string
+              
+      responses:
+        200:
+          description: 字典返回对象
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/definitions/DataDictionaryDtoResponse'
+                    
+  /AgentData/GetCaseFormReports:
+    post:
+      tags:
+        - AgentData
+      summary: 获取表单详情
+              
+      responses:
+        200:
+          description: 表单详情
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/CaseFormDtoResponse'   
+
+  /AgentData/UploadMedia:
+    post:
+      tags:
+        - AgentData
+      summary: 上传媒体数据
+              
+      responses:
+        200:
+          description: 媒体数据对应UrlKey
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 媒体数据对应UrlKey
+  
+  /AgentData/BindingCaseReport:
+    post:
+      tags:
+        - AgentData
+      summary: 绑定表单
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              checkId:
+                 type: string
+                 description: ''
+              caseReportId:
+                 type: string
+                 description: ''
+      responses:
+        200:
+          description: 绑定结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: ''   
+                    
+  /OperationRecord/AddRecord:
+    post:
+      tags:
+        - OperationRecord
+      summary: 添加手术记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/AddRecordDtoRequest' 
+              
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: integer
+                    description: 手术记录Id
+                    
+  /OperationRecord/AddRecordFromCaseReport:
+    post:
+      tags:
+        - OperationRecord
+      summary: 从表单添加手术记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              caseFormId:
+                 type: string
+                 description: ''
+              
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: integer
+                    description: 手术记录Id                    
+                    
+  /OperationRecord/UpdateRecord:
+    post:
+      tags:
+        - OperationRecord
+      summary: 更新手术记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateRecordDtoRequest' 
+              
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: 更新结果
+                    
+  /OperationRecord/DeleteRecord:
+    post:
+      tags:
+        - OperationRecord
+      summary: 删除手术记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                 type: string
+                 description: '手术记录Id'
+              
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: 删除结果 
+
+  /OperationRecord/GetRecordById:
+    post:
+      tags:
+        - OperationRecord
+      summary: 根据Id获取手术记录信息
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                 type: string
+                 description: '手术记录Id'
+              
+      responses:
+        200:
+          description: 手术记录信息
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    $ref: '#/definitions/RecordDtoResponse' 
+                    
+  /OperationRecord/GetPreOperateRecordList:
+    post:
+      tags:
+        - OperationRecord
+      summary: 获取待手术患者列表
+              
+      responses:
+        200:
+          description: 待手术患者列表
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/ReocrdListDtoResponse' 
+
+  /OperationRecord/GetOperatedRecordPager:
+    post:
+      tags:
+        - OperationRecord
+      summary: 获取已手术患者列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/RecordDtoRequest'        
+      responses:
+        200:
+          description: 获取已手术记录集合
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                    - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                    properties:
+                      List:
+                        type: array
+                        items:
+                          $ref: '#/definitions/ReocrdListDtoResponse' 
+
+  /OperationRecord/GetOperationRecordPager:
+    post:
+      tags:
+        - OperationRecord
+      summary: 获取手术记录列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/RecordDtoRequest'        
+      responses:
+        200:
+          description: 已手术患者集合
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                    - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                    properties:
+                      List:
+                        type: array
+                        items:
+                          $ref: '#/definitions/ReocrdListDtoResponse' 
+
+  /OperationRecord/GetCategoryDrugsList:
+    post:
+      tags:
+        - OperationRecord
+      summary: 获取药剂类型
+
+      responses:
+        200:
+          description: 药剂类型
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/DrugsWapperResponse' 
+ 
+  /OperationRecordDetail/RefuseOperation:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 拒绝手术
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                 type: string
+                 description: '手术记录Id'  
+              reason:
+                 type: string
+                 description: '拒绝原因'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果'  
+                    
+  /OperationRecordDetail/InterruptOperation:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 终止手术
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                 type: string
+                 description: '手术记录Id'  
+              reason:
+                 type: string
+                 description: '终止原因'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+                    
+  /OperationRecordDetail/AddTalkRecordDetail:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 添加术前谈话记录详情
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/RecordTalkDetailDtoRequest'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+
+  /OperationRecordDetail/AddSignRecordDetail:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 添加术前人员签到详情
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/RecordSignDetailDtoRequest'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+                    
+  /OperationRecordDetail/AddPreSilhouetteMedia:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 添加术前造影信息
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/SilhouetteMediaRequest'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+                    
+  /OperationRecordDetail/AddSufSilhouetteMedia:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 添加术后造影信息
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/SilhouetteMediaRequest'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+                    
+  /OperationRecordDetail/GetRecordDetailField:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 获取手术记录时间字段【获取字典数据信息返回】
+      responses:
+        200:
+          description: 取手术记录时间字段
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/RecordDetailFieldDto'
+                      
+  /OperationRecordDetail/AddOperationTime:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 添加手术时间记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RecordDetailTimeDtoRequest'
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+                    
+  /OperationRecordDetail/GetRecordFullDetail:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 获取手术详情数据
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                 type: string
+                 description: '手术记录Id'
+      responses:
+        200:
+          description: 手术详情数据
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    $ref: '#/definitions/RecordFullDetailDtoResponse'
+                    
+  /OperationRecordDetail/UpdateRecordFullDetail:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 更新手术详情信息
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/RecordFullDetailDtoRequest' 
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+
+  /OperationRecordDetail/IsMakeTalkRecord:
+    post:
+      tags:
+        - OperationRecordDetail
+      summary: 是否添加谈话记录
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              recordId:
+                 type: integer
+                 description: 记录Id
+      responses:
+        200:
+          description: 返回结果
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+                    description: '返回结果' 
+
+definitions:
+
+  RecordFullDetailDtoRequest:
+    type: object
+    description: '手术时间'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      Record:
+              $ref: '#/definitions/UpdateRecordDtoRequest'
+      RecordTalkDetail:
+              $ref: '#/definitions/RecordTalkDetailDtoRequest'
+      RecordSignDetail:
+              $ref: '#/definitions/RecordSignDetailDtoRequest'
+      RecordDetailTime:
+              type: array
+              description: 协助人员
+              items:
+                $ref: '#/definitions/RecordDetailTimeDtoRequest'
+
+  RecordFullDetailDtoResponse:
+    type: object
+    description: '手术时间'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      RecordDtoResponse:
+              $ref: '#/definitions/RecordDtoResponse'
+      RecordDetailDtoResponse:
+              $ref: '#/definitions/RecordDetailDtoResponse'
+      RecordDetailTimeDtoResponse:
+              type: array
+              description: 协助人员
+              items:
+                $ref: '#/definitions/RecordDetailTimeDtoResponse'
+
+  RecordDetailDtoResponse:
+    type: object
+    description: '表单详细信息'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      TalkStartTime:
+              type: string
+              description: 开始谈话时间
+      TalkEndTime:
+              type: string
+              description: 结束谈话时间
+      OperatingDoctor:
+              type: string
+              description: 主刀医师
+      AssistantDoctors:
+              type: array
+              description: 协助人员
+              items:
+                type: string
+      Talker:
+              type: string
+              description: 谈话人
+      Recorder:
+              type: string
+              description: 记录人
+      CatheterStartTime:
+              type: string
+              description: 导管室启动时间
+      CatheterActivationTime:
+              type: string
+              description: 导管室激活时间
+      TalkMediaUrl:
+              type: string
+              description: 知情同意书图片  
+      SilhouetteMediaUrls:
+              type: array
+              description: 造影信息
+              items:
+                type: string
+
+  RecordDetailTimeDtoResponse:
+    type: object
+    description: '手术时间'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      FieldKey:
+              type: string
+              description: 字段key值
+      FieldName:
+              type: string
+              description: 字段显示名称
+      FieldValue:
+              type: string
+              description: 字段值
+
+  RecordDetailTimeDtoRequest:
+    type: object
+    description: '手术时间'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      FieldKey:
+              type: string
+              description: 字段key值
+      FieldName:
+              type: string
+              description: 字段显示名称
+      FieldValue:
+              type: string
+              description: 字段值      
+
+  RecordDetailFieldDto:
+    type: object
+    description: '手术时间'
+    properties:
+      FieldKey:
+              type: string
+              description: 字段key值
+      FieldName:
+              type: string
+              description: 字段显示名称
+
+  SilhouetteMediaRequest:
+    type: object
+    description: '造影信息'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      MultiMediaDto:
+                $ref: '#/definitions/MultiMediaDto'
+
+  RecordTalkDetailDtoRequest:
+    type: object
+    description: '谈话信息'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      TalkStartTime:
+              type: string
+              description: 开始谈话时间
+      TalkEndTime:
+              type: string
+              description: 结束谈话时间
+      Talker:
+              type: string
+              description: 谈话人
+      TalkMediaUrl:
+                $ref: '#/definitions/MultiMediaDto'
+
+  RecordSignDetailDtoRequest:
+    type: object
+    description: '签到信息'
+    properties:
+      RecordId:
+              type: integer
+              description: 记录Id
+      OperatingDoctor:
+              type: string
+              description: 主刀医师
+      AssistantDoctors:
+              type: array
+              items:
+                type: string
+      Recorder:
+              type: string
+              description: 记录人
+      CatheterStartTime:
+              type: string
+              description: 导管室启动时间
+      CatheterActivationTime:
+              type: string
+              description: 导管室激活时间
+
+  MultiMediaDto:
+    type: object
+    description: '多媒体信息'
+    properties:
+      MultiMediaType:
+              type: integer
+              description: 多媒体类型
+      ItemUrlKey:
+              type: string
+              description: 相对地址
+      
+  RecordDtoRequest:
+    type: object
+    description: '表单列表信息'
+    properties:
+      Name:
+              type: string
+              description: 病人姓名
+      OperationRoom:
+              type: string
+              description: 手术室
+      OperationStartTime:
+              type: string
+              description: 手术开始时间
+      OperationEndTime:
+              type: string
+              description: 手术结束时间
+      PageIndex:
+              type: integer
+              description: 页数
+      PageSize:
+              type: integer
+              description: 每页条数  
+  
+  
+  ReocrdListDtoResponse:
+    type: object
+    description: '表单列表信息'
+    properties:
+      Id:
+              type: integer
+              description: 记录Id
+      Name:
+              type: string
+              description: 病人姓名
+      Gender:
+              type: string
+              description: 性别（字典）
+      Age:
+              type: integer
+              description: 年龄
+      InitialDiagnosis:
+              type: string
+              description: 初步诊断(病情)
+      SystolicPressure:
+              type: integer
+              description: 收缩压（高压）
+      DiastolicPressure:
+              type: integer
+              description: 舒张压（低压）
+      BreathRate:
+              type: integer
+              description: 呼吸
+      HeartRate:
+              type: integer
+              description: 心率
+      CertificateKey:
+              type: string
+              description: 证件名称（住院号，门诊号，身份证件号等）
+      CertificateValue:
+              type: string
+              description: 证件值
+      ComingWay:
+              type: string
+              description: 来院方式
+      Wristlet:
+              type: integer
+              description: 腕带信息
+      Remark:
+              type: string
+              description: 备注
+      OperationRoom:
+              type: string
+              description: 手术室
+      OperationType:
+              type: string
+              description: 手术类型
+      OperationStatus:
+              type: integer
+              description: 手术状态
+      OperationStartTime:
+              type: string
+              description: 手术开始时间
+      OperationEndTime:
+              type: string
+              description: 手术结束时间
+        
+  RecordDtoResponse:
+    type: object
+    description: '表单更新详情'
+    properties:
+      Id:
+              type: integer
+              description: 记录Id
+      CaseFormId:
+              type: integer
+              description: 表单Id
+      Name:
+              type: string
+              description: 病人姓名
+      Gender:
+              type: string
+              description: 性别（字典）
+      Age:
+              type: integer
+              description: 年龄
+      InitialDiagnosis:
+              type: string
+              description: 初步诊断(病情)
+      SystolicPressure:
+              type: integer
+              description: 收缩压（高压）
+      DiastolicPressure:
+              type: integer
+              description: 舒张压（低压）
+      BreathRate:
+              type: integer
+              description: 呼吸
+      HeartRate:
+              type: integer
+              description: 心率
+      PulseRate:
+              type: integer
+              description: 脉搏
+      CertificateKey:
+              type: string
+              description: 证件名称（住院号，门诊号，身份证件号等）
+      CertificateValue:
+              type: string
+              description: 证件值
+      ComingWay:
+              type: string
+              description: 来院方式
+      Wristlet:
+              type: integer
+              description: 腕带信息
+      Remark:
+              type: string
+              description: 备注
+      OperationRoom:
+              type: string
+              description: 手术室
+      OperationType:
+              type: string
+              description: 手术类型
+      DrugDeliveryDtos:
+        type: array
+        items:
+          $ref: '#/definitions/DrugDeliveryDto'
+          
+  UpdateRecordDtoRequest:
+    type: object
+    description: '表单更新详情'
+    properties:
+      Id:
+        type: integer
+        description: 记录Id
+      CaseFormId:
+        type: integer
+        description: 表单Id
+      Name:
+        type: string
+        description: 病人姓名
+      Gender:
+        type: string
+        description: 性别（字典）
+      Age:
+        type: integer
+        description: 年龄
+      InitialDiagnosis:
+        type: string
+        description: 初步诊断(病情)
+      SystolicPressure:
+        type: integer
+        description: 收缩压（高压）
+      DiastolicPressure:
+        type: integer
+        description: 舒张压（低压）
+      BreathRate:
+        type: integer
+        description: 呼吸
+      HeartRate:
+        type: integer
+        description: 心率
+      PulseRate:
+        type: integer
+        description: 脉搏
+      CertificateKey:
+        type: string
+        description: 证件名称（住院号，门诊号，身份证件号等）
+      CertificateValue:
+        type: string
+        description: 证件值
+      ComingWay:
+        type: string
+        description: 来院方式
+      Wristlet:
+        type: integer
+        description: 腕带信息
+      Remark:
+        type: string
+        description: 备注
+      OperationRoom:
+        type: string
+        description: 手术室
+      OperationType:
+        type: string
+        description: 手术类型
+      DrugDeliveryDtos:
+        type: array
+        items:
+          $ref: '#/definitions/DrugDeliveryDto'
+  
+  DrugDeliveryDto:
+    type: object
+    description: '给药数据'
+    properties:
+      DrugKey:
+        type: string
+        description: 给药key
+      Dosage:
+        type: integer
+        description: 药量
+      Unit:
+        type: string
+        description: 单位  
+        
+  AddRecordDtoRequest:
+    type: object
+    description: '表单添加详情'
+    properties:
+      Name:
+        type: string
+        description: 病人姓名
+      Gender:
+        type: string
+        description: 性别（字典）
+      Age:
+        type: integer
+        description: 年龄
+      InitialDiagnosis:
+        type: string
+        description: 初步诊断(病情)
+      SystolicPressure:
+        type: integer
+        description: 收缩压（高压）
+      DiastolicPressure:
+        type: integer
+        description: 舒张压（低压）
+      BreathRate:
+        type: integer
+        description: 呼吸
+      HeartRate:
+        type: integer
+        description: 心率
+      CertificateKey:
+        type: string
+        description: 证件名称（住院号，门诊号，身份证件号等）
+      CertificateValue:
+        type: string
+        description: 证件值
+      ComingWay:
+        type: string
+        description: 来院方式
+      Wristlet:
+        type: integer
+        description: 腕带信息
+      Remark:
+        type: string
+        description: 备注
+      OperationRoom:
+        type: string
+        description: 手术室
+      OperationType:
+        type: string
+        description: 手术类型
+      DrugDeliveryDtos:
+        type: array
+        items:
+          $ref: '#/definitions/DrugDeliveryDto'
+        
+  CaseFormDtoResponse:
+    type: object
+    description: '表单详情'
+    properties:
+      Name:
+        type: string
+        description: 患者姓名
+      Gender:
+        type: string
+        description: 性别
+      Age:
+        type: integer
+        description: 年龄
+      CertificateKey:
+        type: string
+        description: 证件名称（住院号，门诊号，身份证件号等）
+      CertificateValue:
+        type: string
+        description: 证件值
+      InitialDiagnosis:
+        type: string
+        description: 初步诊断(病情) 
+  UserInfo:
+    type: object
+    description: '登录返回对象'
+    properties:
+      Id:
+        type: integer
+        description: 登录ID
+      Name:
+        type: string
+        description: 登录人名称
+      LoginName:
+        type: string
+        description: 登录账号
+      LoginType:
+        type: integer
+        description: 登录类型
+      Token:
+        type: string
+        description: Token信息
+  DataDictionaryDtoResponse:
+    type: object
+    description: '字典返回对象'
+    properties:
+      Id:
+        type: integer
+        description: 登录ID
+      Key:
+        type: string
+        description: 字典Key (同一类型下唯一值，不可修改) [长度64;必填]
+      Value:
+        type: string
+        description: 字典Value（显示的值，可修改） [长度128;必填]
+  DrugsWapperResponse:
+    type: object
+    description: '字典返回对象'
+    properties:
+      Category:
+        type: integer
+        description: 分类
+      DrugsResponses:
+        type: array
+        items:
+          $ref: '#/definitions/DrugsResponse'
+  DrugsResponse:
+    type: object
+    description: '给药字典数据'
+    properties:
+      DrugKey:
+        type: integer
+        description: 给药key
+      DurgName:
+        type: string
+        description: 给药名称
+      Unit:
+        type: string
+        description: 单位
+      Remarks:
+        type: string
+        description: 说明
+      

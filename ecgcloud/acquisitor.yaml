@@ -1,0 +1,447 @@
+swagger: '2.0'
+info:
+  description: 心电采集程序接口规范，Rest风格
+  version: 1.0.0
+  title: 心电采集程序接口规范
+  termsOfService: 'http://aecg.com.cn'
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+basePath: /v1/acquisitor
+tags:
+  - name: patient
+    description: 病人信息相关
+  - name: examination
+    description: 检查信息相关
+  - name: diagnose
+    description: 诊断相关
+  - name: config
+    description: 配置相关
+  - name: login
+    description: 设备登录
+  - name: status
+    description: 服务状态
+  - name: workband
+    description: 词库
+paths:
+  /examination-upload:
+    post:
+      tags:
+        - examination
+      summary: 绑定图谱与检查的关系
+      operationId: bindEcgAndExamination
+      produces:
+        - application/json
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+        - name: Acquisition
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Acquisition'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+        '400':
+          description: Invalid ID supplied
+        '403':
+          description: Auth failed
+        '404':
+          description: Examination not found
+
+
+  /diagnose-auth:
+    post:
+      tags:
+        - diagnose
+      summary: 诊断时鉴权
+      operationId: authByDoctorInfo
+      produces:
+        - application/json
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+        - name: DoctorId
+          in: formData
+          description: 医生ID
+          required: true
+          type: integer
+          format: int32
+        - name: PasswordHash
+          in: formData
+          description: 密码Hash值
+          required: true
+          type: string
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/AuthResponse'
+          description: successful operation
+        '400':
+          description: Invalid DoctorId supplied
+        '403':
+          description: Auth failed
+        '404':
+          description: Doctor not found
+  /configs:
+    get:
+      tags:
+        - config
+      summary: 获取配置
+      description: ''
+      operationId: getConfig
+      produces:
+        - application/json
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ConfigsResponse'
+        '403':
+          description: Auth failed
+    put:
+      tags:
+        - config
+      summary: 上传配置
+      description: ''
+      operationId: putConfig
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Config'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+  /login:
+    post:
+      tags:
+        - login
+      summary: 设备登录
+      description: ''
+      operationId: login
+      produces:
+        - application/json
+      parameters:
+        - name: device-code
+          in: header
+          description: 设备code
+          required: true
+          type: string
+        - name: device-name
+          in: header
+          description: 设备名称
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AuthResponse'
+        '403':
+          description: Auth failed
+  /workbands:
+    get:
+      tags:
+        - workband
+      summary: 获取词库
+      description: ''
+      operationId: getWorkBands
+      produces:
+        - application/json
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/WorkBandsResponse'
+        '403':
+          description: Auth failed
+  /server-status:
+    get:
+      tags:
+        - status
+      summary: 获取配置
+      description: ''
+      operationId: getServerStatus
+      produces:
+        - application/json
+      parameters:
+        - name: access-token
+          in: header
+          description: 鉴权token
+          required: true
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ServerStatusResponse'
+        '403':
+          description: Auth failed
+definitions:
+  DoctorsResponse:
+    allOf:
+      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/definitions/Doctor'
+  AuthResponse:
+    allOf:
+      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+      - type: object
+        properties:
+          data:
+            type: string
+  ConfigsResponse:
+    allOf:
+      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/definitions/Config'
+  ServerStatusResponse:
+    allOf:
+      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+      - type: object
+        properties:
+          data:
+            $ref: '#/definitions/ServerStatus'
+  WorkBandsResponse:
+    allOf:
+      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/definitions/WorkBand'
+  Acquisition:
+    type: object
+    description: 采集信息
+    properties:
+      id:
+        type: string
+        description: 采集信息ID（GUID）
+        x-faker: random.uuid
+      examId:
+        type: string
+        description: 检查ID（GUID）
+        x-faker: random.uuid
+      acquisitionTime:
+        type: string
+        format: date
+        description: 采集时间
+        x-faker: date.past
+      duration:
+        type: integer
+        format: int32
+        description: 采集时长
+      ecgDataKey:
+        type: string
+        description: 文件Key
+  Diagnose:
+    type: object
+    description: 诊断信息
+    properties:
+      doctorName:
+        type: string
+        description: 诊断医生姓名
+      date:
+        type: string
+        format: date
+        description: 诊断日期
+        x-faker: date.past
+      diagnose:
+        type: string
+        description: 诊断
+      description:
+        type: string
+        description: 诊断描述
+      leadNameList:
+        type: array
+        description: 导联名列表
+        items:
+          type: string
+      leadNum:
+        type: integer
+        format: int32
+        description: 导联数
+      measurement:
+        $ref: '#/definitions/Measurement'
+  Status:
+    type: object
+    description: 检查状态
+    properties:
+      status:
+        type: integer
+        format: int32
+        description: 状态码
+      statusName:
+        type: string
+        description: 状态名称
+  Measurement:
+    type: object
+    description: 测值
+    properties:
+      Avm:
+        type: number
+      HR:
+        type: integer
+        format: int32
+      QRSaxis:
+        type: integer
+        format: int32
+      P:
+        type: integer
+        format: int32
+      PR:
+        type: integer
+        format: int32
+      QRS:
+        type: integer
+        format: int32
+      QT:
+        type: integer
+        format: int32
+      QTC:
+        type: integer
+        format: int32
+      T:
+        type: integer
+        format: int32
+      SV1:
+        type: number
+      RV1:
+        type: number
+      SV2:
+        type: number
+      SV5:
+        type: number
+      RV5:
+        type: number
+      RV6:
+        type: number
+      Paxis:
+        type: number
+      Taxis:
+        type: number
+      atrialRate:
+        type: integer
+        format: int32
+      ventricularRate:
+        type: integer
+        format: int32
+      samplePerSecond:
+        type: integer
+        format: int32
+        description: 采样率
+  Doctor:
+    type: object
+    description: 医生
+    properties:
+      id:
+        type: string
+        description: 医生ID
+      name:
+        type: string
+        description: 医生姓名
+      permission:
+        type: array
+        description: 权限列表
+        items:
+          type: string
+  Config:
+    type: object
+    description: 配置
+    properties:
+      key:
+        type: string
+        description: 配置Key
+      value:
+        type: string
+        description: 配置Value
+  ServerStatus:
+    type: object
+    description: 服务状态
+    properties:
+      latestUpdateTime:
+        type: string
+        format: date
+        x-faker: date.past
+        description: 最后更新时间
+      appVerion:
+        type: integer
+        format: int32
+        description: App最新版本号
+      appDownloadUrl:
+        type: string
+        description: Apk下载地址
+  WorkBand:
+    type: object
+    description: 词条
+    properties:
+      imeGuid:
+        type: string
+        description: 词条ID（GUID）
+        x-faker: random.uuid
+      parts:
+        type: string
+        description: 组成部分
+      category:
+        type: string
+        description: 分类
+      displayName:
+        type: string
+        description: 展示名称
+      diagnosis:
+        type: string
+        description: 诊断内容
+      description:
+        type: string
+        description: 诊断描述
+      order:
+        type: integer
+        format: int32
+        description: 排序权重

@@ -1,0 +1,175 @@
+swagger: '2.0'
+info:
+  description: Swagger API Specification Repository
+  version: 1.0.0
+  title: Swagger API Specification Repository
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: xuwei@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+host: apispec.aecg.com.cn
+basePath: '/api/swagger'
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+paths:
+  /repository:
+    get:
+      description: Get repository files
+      responses:
+        200:
+          description: Returns results of repository files
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                isDirectory:
+                  type: boolean
+                isFile:
+                  type: boolean
+                filename:
+                  type: string
+
+  /repository/git-info:
+    get:
+      description: Get repository files
+      responses:
+        200:
+          description: Returns git info
+          schema:
+            type: object
+            properties:
+              branchName:
+                type: string
+              headCommit:
+                type: object
+                properties:
+                  sha:
+                    type: string
+                  author:
+                    type: string
+                  date:
+                    type: string
+                  message:
+                    type: string
+
+
+  /repository/update:
+    post:
+      description: Get repository files
+      responses:
+        200:
+          description: Returns true if pull from git succeed
+          schema:
+            type: boolean
+
+  /schemas:
+    get:
+      description: Query all schemas
+      responses:
+        200:
+          description: Returns query results of schemas
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Schema'
+
+  /schemas/{id}:
+    get:
+      description: Query single schema by id
+      parameters:
+        - name: id
+          type: string
+          in: path
+          description: The idetifier of schema
+          required: true
+      responses:
+        200:
+          description: Returns schema body
+          schema:
+            $ref: '#/definitions/Schema'
+    delete:
+      description: Remove schema by id
+      parameters:
+        - name: id
+          type: string
+          in: path
+          description: The idetifier of schema
+          required: true
+      responses:
+        200:
+          description: Returns true when succeeed
+          schema:
+            type: boolean
+
+  /parse:
+    get:
+      description: Parse a swagger document and create index of it
+      parameters:
+       - name: uri
+         in: query
+         type: string
+         description: URI of the schema
+         required: true
+      responses:
+        200:
+          description: Returns parsed result
+
+
+  /definitions:
+    get:
+      description: Search definitions from respository
+      parameters:
+       - name: keywords
+         in: query
+         type: string
+         description: Keywords of definition to be found
+         required: true
+      responses:
+        200:
+          description: Returns search result of definitions searching
+
+  /codegen:
+    get:
+      description: Generation source code from swagger definitions
+      parameters:
+        - name: id
+          in: query
+          type: string
+          description: Schema id
+          required: true
+        - name: type
+          in: query
+          type: string
+          enum: [js, ts]
+          description: >
+            Source code type:
+            * `js` JavasScript source code
+            * `ts` TypeScript source code
+      responses:
+        200:
+          description: Response of generated source code
+
+
+
+definitions:
+  Schema:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier of a schema
+      uri:
+        type: string
+        description: URI of the swagger document
+      document:
+        type: object
+        description: Document body
+

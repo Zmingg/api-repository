@@ -1,0 +1,1228 @@
+swagger: '2.0'
+info:
+  description: 财务管理模块
+  version: 0.0.1
+  title: 心电云平台财务管理
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: xuwei@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+host: localhost:3001
+basePath: '/api'
+tags:
+  - name: 财务
+    description: 财务管理
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+paths:
+  /Finance/GetReportDetailPager:
+    post:
+      tags:
+        - 财务
+      summary: 获取报告详情列表分页
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            FinanceId:
+              type: "string"
+              description: ""
+            BeginRepTime:
+              description: "报告开始时间"
+            EndRepTime:
+              description: "报告结束时间"
+            ExamOrgName:
+              type: "string"
+              description: "检查机构名称"
+            ExamDrName:
+              type: "string"
+              description: "检查医生姓名"
+            PatName:
+              type: "string"
+              description: "患者姓名"
+            RepStatus:
+              type: "integer"
+              description: "报告状态"
+            DiagnosticCenterName:
+              type: "string"
+              description: "诊断中心名称"
+            DiagDrName:
+              type: "string"
+              description: "诊断医生名称"
+            PatIdCardNo:
+              type: "string"
+              description: "患者身份证号"
+            PageSize:
+              type: "integer"
+              description: "每页行数"
+            Page:
+              type: "integer"
+              description: "表示第几页"
+            OrderBy:
+              type: "string"
+              description: "排序表达式：属性名加空格asc或desc"
+      responses:
+        200:
+          description: 报告详情列表分页响应
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                      - $ref: '#/definitions/Pagination'
+                      - properties:
+                          Rows:
+                            type: array
+                            items:
+                              properties:
+                                RepTime:
+                                  type: string
+                                  format: 'date-time'
+                                  description: "报告时间"
+                                PatName:
+                                  type: "string"
+                                  description: "患者姓名"
+                                  x-faker: name.peopleName
+                                PatIdCardNo:
+                                  type: "string"
+                                  description: "身份证号"
+                                  x-faker: people.idCard
+                                DiagnosticCenterName:
+                                  type: "string"
+                                  description: "诊断中心名称"
+                                  x-faker: hospital.name
+                                ExamOrgName:
+                                  type: "string"
+                                  description: "检查机构名称"
+                                  x-faker: hospital.name
+                                ExamDrName:
+                                  type: "string"
+                                  description: "检查医生姓名"
+                                  x-faker: name.peopleName
+                                DiagDrName:
+                                  type: "string"
+                                  description: "诊断医生名称"
+                                  x-faker: name.peopleName
+                                RepStatus:
+                                  type: "integer"
+                                  enum: [10, 20, 30, 50, 60, 70]
+                                  description: >
+                                    报告状态
+                                      10:已保存(上传报告) 20:已分配（会诊申请） 30:会诊中（会诊受理） 50:会诊完成（会诊提交） 60:已取回 70:已打印
+                                RepStatusName:
+                                  type: "string"
+                                  description: "报告状态名称"
+
+  /Finance/GetStatisticsById:
+    post:
+      tags:
+        - 财务
+      summary: 获取统计列表
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            financeId:
+              type: string
+      responses:
+        200:
+          description: ''
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/GetStatisticsResponse'
+
+  /Finance/GetFinancePager:
+    post:
+      tags:
+        - 财务
+      summary: 获取统计列表
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            request:
+              type: object
+              properties:
+                FinanceYear:
+                  type: integer
+                  description: "年"
+                FinanceMonth:
+                  type: integer
+                  description: "月"
+                Status:
+                  type: integer
+                  description: >
+                    审核状态：1已审核 2 未审核
+                PageSize:
+                  type: "integer"
+                  description: "每页行数"
+                Page:
+                  type: "integer"
+                  description: "表示第几页"
+                OrderBy:
+                  type: "string"
+                  description: "排序表达式：属性名加空格asc或desc"
+      responses:
+        200:
+          description: 获取财务统计分页列表响应
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                      - $ref: '#/definitions/Pagination'
+                      - properties:
+                          Rows:
+                            type: array
+                            items:
+                              properties:
+                                Id:
+                                  type: "string"
+                                  description: "主键"
+
+                                FinanceYear:
+                                  type: "integer"
+                                  description: "年"
+
+                                FinanceMonth:
+                                  type: "integer"
+                                  description: "月"
+
+                                Count1001:
+                                  type: "integer"
+                                  description: "静息总数"
+
+                                Count1002:
+                                  type: "integer"
+                                  description: "动态心电总数"
+
+                                Count1003:
+                                  type: "integer"
+                                  description: "动态血压总数"
+
+                                TotalCount:
+                                  type: "integer"
+                                  description: "总数"
+
+                                Status:
+                                  type: "integer"
+                                  description: "状态"
+
+                                StatusName:
+                                  type: "string"
+                                  description: "状态名称"
+
+  /Finance/SaveFinanceInfo:
+    post:
+      tags:
+        - 财务
+      summary: 保存心电统计信息
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            financeInfo:
+              type: object
+              properties:
+                Id:
+                  type: "string"
+                  description: "主键"
+                FinanceYear:
+                  type: "integer"
+                  description: "年"
+                FinanceMonth:
+                  type: "integer"
+                  description: "月"
+                Reconciliations:
+                  type: "array"
+                  items:
+                    $ref: '#/definitions/FinanceReconciliationItem'
+                SystemCount1001:
+                  type: "integer"
+                  description: "常规心电"
+                SystemCount1002:
+                  type: "integer"
+                  description: "动态心电"
+                SystemCount1003:
+                  type: "integer"
+                  description: "动态血压"
+                Count1001:
+                  type: "integer"
+                  description: "常规心电"
+                Count1002:
+                  type: "integer"
+                  description: "动态心电"
+                Count1003:
+                  type: "integer"
+                  description: "动态血压"
+                TotalCount:
+                  type: "integer"
+                  description: "总数量"
+                Status:
+                  type: "integer"
+                  description: >
+                    审核状态：1已审核 2 未审核
+                StatusName:
+                  type: "string"
+                  description: "状态名称"
+      responses:
+        200:
+          description: ''
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+
+  /Finance/AuditFinanceInfo:
+    post:
+      tags:
+        - 财务
+      summary: 审核心电统计信息
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            financeInfo:
+              type: object
+              properties:
+                Id:
+                  type: "string"
+                  description: "主键"
+                FinanceYear:
+                  type: "integer"
+                  description: "年"
+                FinanceMonth:
+                  type: "integer"
+                  description: "月"
+                Reconciliations:
+                  type: "array"
+                  items:
+                    $ref: '#/definitions/FinanceReconciliationItem'
+                SystemCount1001:
+                  type: "integer"
+                  description: "常规心电"
+                SystemCount1002:
+                  type: "integer"
+                  description: "动态心电"
+                SystemCount1003:
+                  type: "integer"
+                  description: "动态血压"
+                Count1001:
+                  type: "integer"
+                  description: "常规心电"
+                Count1002:
+                  type: "integer"
+                  description: "动态心电"
+                Count1003:
+                  type: "integer"
+                  description: "动态血压"
+                TotalCount:
+                  type: "integer"
+                  description: "总数量"
+                Status:
+                  type: "integer"
+                  description: >
+                    审核状态：1已审核 2 未审核
+                StatusName:
+                  type: "string"
+                  description: "状态名称"
+      responses:
+        200:
+          description: ''
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+
+  /Finance/GetFinanceStatisticsInfo:
+    post:
+      tags:
+        - 财务
+      summary: 获取统计的财务统计详细信息
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          description: 获取统计的财务统计详细信息请求参数
+          properties:
+            financeYear:
+              type: integer
+              description: 年
+            financeMonth:
+              type: integer
+              description: 月
+            isReCounted:
+              type: integer
+              enum: [0, 1]
+              description: >
+                是否重新统计 1：是 0：否
+      responses:
+        200:
+          description: 返回统计的财务统计详细信息响应
+          schema:
+            type: object
+            description: 返回统计的财务统计详细信息响应
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - type: object
+                properties:
+                  Data:
+                    type: object
+                    properties:
+                      Id:
+                        type: string
+                        description: 主键
+                      FinanceYear:
+                        type: integer
+                        description: 年
+                      FinanceMonth:
+                        type: integer
+                        description: 月
+                      Reconciliations:
+                        type: "array"
+                        items:
+                          $ref: '#/definitions/FinanceReconciliationItem'
+                      SystemCount1001:
+                        type: "integer"
+                        description: "常规心电"
+                      SystemCount1002:
+                        type: "integer"
+                        description: "动态心电"
+                      SystemCount1003:
+                        type: "integer"
+                        description: "动态血压"
+                      Count1001:
+                        type: "integer"
+                        description: "常规心电"
+                      Count1002:
+                        type: "integer"
+                        description: "动态心电"
+                      Count1003:
+                        type: "integer"
+                        description: "动态血压"
+                      TotalCount:
+                        type: "integer"
+                        description: "总数量"
+                      Status:
+                        type: "integer"
+                        description: >
+                          审核状态：1已审核 2 未审核
+                      StatusName:
+                        type: "string"
+                        description: "状态名称"
+
+  /Finance/GetFinanceInfo:
+    post:
+      tags:
+        - 财务
+      summary: 获取统计的财务统计详细信息
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          description: 获取统计的财务统计详细信息请求参数
+          properties:
+            id:
+              type: string
+              description: 主键
+      responses:
+        200:
+          description: 返回获取统计的财务统计详细信息响应
+          schema:
+            type: object
+            description: 获取统计的财务统计详细信息响应
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - type: object
+                properties:
+                   Data:
+                    type: object
+                    properties:
+                      Id:
+                        type: string
+                        description: 主键
+                      FinanceYear:
+                        type: integer
+                        description: 年
+                      FinanceMonth:
+                        type: integer
+                        description: 月
+                      Reconciliations:
+                        type: "array"
+                        items:
+                          $ref: '#/definitions/FinanceReconciliationItem'
+                      SystemCount1001:
+                        type: "integer"
+                        description: "常规心电"
+                      SystemCount1002:
+                        type: "integer"
+                        description: "动态心电"
+                      SystemCount1003:
+                        type: "integer"
+                        description: "动态血压"
+                      Count1001:
+                        type: "integer"
+                        description: "常规心电"
+                      Count1002:
+                        type: "integer"
+                        description: "动态心电"
+                      Count1003:
+                        type: "integer"
+                        description: "动态血压"
+                      TotalCount:
+                        type: "integer"
+                        description: "总数量"
+                      Status:
+                        type: "integer"
+                        description: >
+                          审核状态：1已审核 2 未审核
+                      StatusName:
+                        type: "string"
+                        description: "状态名称"
+
+  /Finance/GetExamOrgList:
+    post:
+      tags:
+        - 财务
+      summary: 获取财务统计报告列表分页
+      responses:
+        200:
+          description: 返回财务报获取财务统计报告列表分页响应
+          schema:
+            type: object
+            description: 检查机构列表响应
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - type: object
+                properties:
+                  Data:
+                    type: object
+                    properties:
+                      Rows:
+                        type: array
+                        items:
+                          description: 检查机构列表
+                          properties:
+                            ExamOrgId:
+                              type: string
+                              description: 机构Id
+                            ExamOrgName:
+                              type: string
+                              description: 机构名称
+                              x-faker: hospital.name
+
+  /Finance/CreateInvoice:
+    post:
+      tags:
+        - 财务
+      summary: 开票
+      parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            FinanceDetailId:
+              type: string
+              description: 主键
+            InvoiceCreateTime:
+              type: string
+              description: 发票生成时间
+            Remark:
+              type: string
+              description: 备注信息
+      responses:
+        200:
+          description: 返回开票响应
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+
+  /Finance/CreateReconciliation:
+    post:
+      tags:
+        - 对账
+      summary: 对账生成
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: "object"
+            description: ""
+            properties:
+              FinanceDetailId:
+                type: "string"
+                description: "Id"
+              ReceivedType:
+                type: "string"
+                description: "回款方式。字符串 （线下汇款、银联支付、支付宝支付、微信支付、现金支付、其他）"
+              ReceivedMoney:
+                type: "number"
+                description: "回款金额"
+              ReceivedTime:
+                type: "string"
+                description: "回款时间"
+              Remark:
+                type: "string"
+                description: "备注 512字符内"
+      responses:
+        200:
+          description: 返回开票响应
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+
+  /Finance/ReconciliationSummary:
+    post:
+        summary: 报告账单信息
+        tags:
+          - 对账
+        parameters:
+          - in: body
+            name: body
+            schema:
+              type: object
+              properties:
+                financeDetailId:
+                  type: string
+        responses:
+          200:
+            description: 报告账单信息响应
+            schema:
+              type: object
+              allOf:
+                - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+                - properties:
+                    Data:
+                      properties:
+                        FinanceTime:
+                          type: "string"
+                          description: "年月。格式如：2018年3月"
+                        ExamOrgName:
+                          type: "string"
+                          description: "检查机构名称（付款）"
+                        ExamOrgContacts:
+                          type: "string"
+                          description: "检查机构联系人"
+                        ExamOrgContactPhone:
+                          type: "string"
+                          description: "检查机构联系人电话"
+                        Status:
+                          type: "integer"
+                          description: "状态"
+                        TotalMoney:
+                          type: "number"
+                        Items:
+                          type: array
+                          items:
+                            properties:
+                              ReportCategory:
+                                type: "string"
+                                description: "心电类别"
+                              Count:
+                                type: "integer"
+                                description: "数量"
+                              Fee:
+                                type: "number"
+                                description: "单价"
+                              TotalMoney:
+                                type: "number"
+                                description: "总金额"
+
+  /Finance/GetReconciliationPager:
+    post:
+      summary: 对账单列表分页
+      tags:
+        - 对账
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              Id:
+                type: "string"
+                description: ""
+              FinanceTime:
+                type: "string"
+                description: "格式如 2018-01"
+              ExamOrgId:
+                type: "string"
+                description: "检查机构Id"
+              ExamOrgName:
+                type: "string"
+                description: "检查机构名称"
+              PaymentsType:
+                type: "string"
+                description: "支付方式（支付宝、现金、银行卡等）"
+              PayDate:
+                type: "string"
+                description: "支付时间。精确到天"
+              Status:
+                type: "integer"
+                description: "对账状态"
+              ConfirmedDate:
+                type: "string"
+                description: "对账时间"
+              PageSize:
+                type: "integer"
+                description: "每页行数"
+              Page:
+                type: "integer"
+                description: "表示第几页"
+              OrderBy:
+                type: "string"
+                description: "排序表达式：属性名加空格asc或desc"
+      responses:
+        200:
+          description: 对账详情
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    properties:
+                      Rows:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            Id:
+                              type: "string"
+                              description: "主键"
+                            FinanceTime:
+                              type: "string"
+                              description: "年月。格式如：2018年3月"
+                              format: date-time
+                            ExamOrgId:
+                              type: "string"
+                              description: "检查机构Id（付款）"
+                            ExamOrgName:
+                              type: "string"
+                              description: "检查机构名称（付款）"
+                              x-faker: hospital.name
+                            TotalMoney:
+                              type: number
+                              description: "金额"
+                            InvoiceNumber:
+                              type: "string"
+                              description: "发票号码"
+                            InvoiceCreateTime:
+                              type: "string"
+                              description: "开票时间"
+                              format: date-time
+                            ReceivedPaymentsType:
+                              type: "string"
+                              description: "回款方式"
+                            ReceivedPayments:
+                              type: number
+                              description: "回款金额"
+                            ReceivedPaymentsTime:
+                              type: "string"
+                              description: "回款时间"
+                              format: date-time
+                            Status:
+                              type: "integer"
+                              description: >
+                                状态 1、已审核 2、未审核 3、已开票 4、已对账
+                              enum: [1, 2, 3, 4]
+
+  /Finance/ReconciliationDetail:
+    post:
+      summary: 对账单详情
+      tags:
+        - 对账
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              financeDetailId:
+                type: string
+                description: 主键
+      responses:
+        200:
+          description: 对账详情
+          schema:
+            type: object
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    properties:
+                      Id:
+                        type: string
+                        description: 主键
+                      Status:
+                        type: integer
+                        enum: [1, 2, 3, 4]
+                        description: >
+                          对账状态 1、已审核 2、未审核 3、已开票 4、已对账
+                      ExamOrgName:
+                        type: string
+                        description: 检查机构Id（付款）
+                      ReceivedType:
+                        type: string
+                        description: 回款方式
+                      ReceivedMoney:
+                        type: number
+                        description: 回款金额
+                      Remark:
+                        type: string
+                        description: 备注
+                      InvoiceCreateTime:
+                        type: string
+                        description: 开票时间
+                      ReceivedTime:
+                        type: string
+                        description: 回款时间
+                      ConfirmedTime:
+                        type: string
+                        description: 对账时间
+
+definitions:
+  Pagination:
+    type: object
+    description: 分页
+    properties:
+      Page:
+        type: number
+        description: 页码
+        x-faker: random.number
+
+      PageSize:
+        type: number
+        description: 每页记录数
+        x-faker: random.number
+
+      Total:
+        type: number
+        description: 总记录数
+        x-faker: random.number
+
+
+  Finance:
+    type: "object"
+    description: ""
+    properties:
+      Id:
+        type: "string"
+        description: "主键"
+        x-faker: random.number
+      DiagnosticCenterId:
+        type: "string"
+        description: "诊断中心Id"
+      DiagnosticCenterName:
+        type: "string"
+        description: "诊断中心名称"
+      StatisticalTimeInfo:
+        type: "string"
+        description: "统计年月"
+        format: year-month
+      StatisticalYear:
+        type: "string"
+        description: "统计年份"
+      StatisticalMonth:
+        type: "string"
+        description: "统计月份"
+      StatisticalUserId:
+        type: "string"
+        description: "统计人Id"
+      StatisticalUserName:
+        type: "string"
+        description: "统计人名称"
+      StatisticalCreateTime:
+        type: "string"
+        description: "统计时间"
+      Status:
+        type: number
+        enum: [1, 2]
+        description: >
+          状态
+            * `1` 已审核
+            * `2` 未审核
+      DeleteFlag:
+        description: "删除标识"
+      CreateTime:
+        description: "创建时间"
+      CreateUserId:
+        type: "string"
+        description: "创建人ID"
+      CreateUserName:
+        type: "string"
+        description: "创建人姓名"
+      UpdateTime:
+        description: "修改时间"
+      UpdateUserId:
+        type: "string"
+        description: "修改人Id"
+      UpdateUserName:
+        type: "string"
+        description: "修改人姓名"
+      Extend1:
+        type: "string"
+        description: "预留扩展字段"
+      RowVersion:
+        type: "string"
+        description: "行版本号"
+
+  FinaceDetail:
+    type: "object"
+    description: ""
+    properties:
+      Id:
+        type: "string"
+        description: "主键"
+      FinanceId:
+        type: "string"
+        description: "财务表主键"
+      ExamOrgId:
+        type: "string"
+        description: "检查机构Id"
+      ExamOrgName:
+        type: "string"
+        description: "检查机构名称"
+      ExamOrgContacts:
+        type: "string"
+        description: "检查机构联系人名称"
+      ExamOrgContactPhone:
+        type: "string"
+        description: "检查机构联系人手机"
+      TotalMoney:
+        description: "总金额"
+      InvoiceMoney:
+        type: "number"
+        description: "发票金额"
+      InvoiceNumber:
+        type: "string"
+        description: "发票号码"
+      InvoiceCreateTime:
+        type: "string"
+        description: "开票时间"
+      InvoiceCreateUserId:
+        type: "string"
+        description: "开票人Id"
+      InvoiceCreateUserName:
+        type: "string"
+        description: "开票人姓名"
+      InvoiceOperationTime:
+        type: "string"
+        description: "开票人操作时间"
+      InvoiceCreateRemark:
+        type: "string"
+        description: "开票备注"
+      ReceivedPaymentsType:
+        type: "string"
+        description: "回款方式"
+      ReceivedPayments:
+        type: "number"
+        description: "回款金额"
+      ReceivedPaymentsTime:
+        type: "string"
+        description: "回款时间"
+      StatementRemark:
+        type: "string"
+        description: "对账备注"
+      StatementCreateUserId:
+        type: "string"
+        description: "对账人Id"
+      StatementCreateUserName:
+        type: "string"
+        description: "对账人姓名"
+      StatementCreateTime:
+        type: "string"
+        description: "对账操作时间"
+      Status:
+        enum: [1, 2, 3, 4]
+        description: >
+          状态
+            * `1` 已审核
+            * `2` 未审核
+            * `3` 已开票
+            * `4` 已对账
+      DeleteFlag:
+        description: "删除标识"
+      CreateTime:
+        description: "创建时间"
+      CreateUserId:
+        type: "string"
+        description: "创建人ID"
+      CreateUserName:
+        type: "string"
+        description: "创建人姓名"
+      UpdateTime:
+        description: "修改时间"
+      UpdateUserId:
+        type: "string"
+        description: "修改人Id"
+      UpdateUserName:
+        type: "string"
+        description: "修改人姓名"
+      Extend1:
+        type: "string"
+        description: "预留扩展字段"
+      RowVersion:
+        type: "string"
+        description: "行版本号"
+
+  FinanceStatistics:
+    type: "object"
+    description: ""
+    properties:
+      Id:
+        type: "string"
+        description: "主键"
+        x-faker: random.number
+      SourceType:
+        enum: [1, 2]
+        description: >
+          来源
+            * 1 标识Finance
+            * 2 FinanceDetail"
+      SourceKey:
+        type: "string"
+        description: "关联表主键"
+      FinanceType:
+        enum: [0, 1, 2, 3]
+        description: >
+          类型
+          * `0` 默认
+          * `1` 节假日
+          * `2` 夜班
+          * `3` 疑难病历等统计
+      ReportCategory:
+        enum: [1001, 1002, 1003]
+        description: >
+          报告类型
+          * `1001` 静息心电
+          * `1002` 动态心电
+          * `1003` 动态血压
+      ReportCount:
+        type: "number"
+        description: "报告总数"
+      ConfirmedReportCount:
+        description: "确认报告总数"
+      Fee:
+        type: "number"
+        description: "单价（冗余表中获取）"
+      TotalMoney:
+        type: "number"
+        description: "确认后总金额"
+      DeleteFlag:
+        description: "删除标识"
+      CreateTime:
+        description: "创建时间"
+      CreateUserId:
+        type: "string"
+        description: "创建人ID"
+      CreateUserName:
+        type: "string"
+        description: "创建人姓名"
+      UpdateTime:
+        description: "修改时间"
+      UpdateUserId:
+        type: "string"
+        description: "修改人Id"
+      UpdateUserName:
+        type: "string"
+        description: "修改人姓名"
+      Extend1:
+        type: "string"
+        description: "预留扩展字段"
+      RowVersion:
+        type: "string"
+        description: "行版本号"
+
+  OrgFeeStandard:
+    type: "object"
+    description: ""
+    properties:
+      Id:
+        type: "string"
+        description: "主键"
+      DiagnosticCenterId:
+        type: "string"
+        description: "诊断中心Id"
+      DiagnosticCenterName:
+        type: "string"
+        description: "诊断中心名称"
+      ExamOrgId:
+        type: "string"
+        description: "检查机构Id"
+      ExamOrgName:
+        type: "string"
+        description: "检查机构名称"
+      ReportCategory:
+        type: "string"
+        description: "报告类别"
+      Fee:
+        type: "number"
+        description: "付费单价"
+      DeleteFlag:
+        description: "删除标识"
+      CreateTime:
+        description: "创建时间"
+      CreateUserId:
+        type: "string"
+        description: "创建人ID"
+      CreateUserName:
+        type: "string"
+        description: "创建人姓名"
+      UpdateTime:
+        description: "修改时间"
+      UpdateUserId:
+        type: "string"
+        description: "修改人Id"
+      UpdateUserName:
+        type: "string"
+        description: "修改人姓名"
+      Extend1:
+        type: "string"
+        description: "预留扩展字段"
+      RowVersion:
+        type: "string"
+        description: "行版本号"
+
+
+  FinancePagerRow:
+    description: 统计视图对象
+    properties:
+      Id:
+        type: "string"
+        description: "主键"
+
+      FinanceYear:
+        type: "integer"
+        description: "年"
+
+      FinanceMonth:
+        type: "integer"
+        description: "月"
+
+      Count1001:
+        type: "integer"
+        description: "静息总数"
+
+      Count1002:
+        type: "integer"
+        description: "动态心电总数"
+
+      Count1003:
+        type: "integer"
+        description: "动态血压总数"
+
+      TotalCount:
+        type: "integer"
+        description: "总数"
+
+      Status:
+        type: "integer"
+        description: "状态"
+
+      StatusName:
+        type: "string"
+        description: "状态名称"
+
+  GetStatisticsResponse:
+    type: object
+    properties:
+      ExamOrgId:
+        type: "string"
+        description: "检查机构Id"
+      ExamOrgName:
+        type: "string"
+        description: "检查机构名称"
+      ReportCount:
+        type: "integer"
+        description: "系统计算报告数量"
+      ConfirmedReportCount:
+        type: "integer"
+        description: "确认报告数量"
+      ReportCategory:
+        type: "string"
+        description: "报告类型"
+      FinanceDetailId:
+        type: "string"
+        description: ""
+
+  FinanceReconciliationItem:
+    type: object
+    properties:
+      FinanceDetailId:
+        type: "string"
+        description: "主键"
+
+      ExamOrgId:
+        type: "string"
+        description: "检查机构Id"
+
+      ExamOrgName:
+        type: "string"
+        description: "检查机构名称"
+
+      SystemCount1001:
+        type: "integer"
+        description: "静息心电系统统计数量"
+
+      SystemCount1002:
+        type: "integer"
+        description: "动态心电系统统计数量"
+
+      SystemCount1003:
+        type: "integer"
+        description: "动态血压系统统计数量"
+
+      Count1001:
+        type: "integer"
+        description: "静息心电统计数量"
+
+      Count1002:
+        type: "integer"
+        description: "动态心电统计数量"
+
+      Count1003:
+        type: "integer"
+        description: "动态血压统计数量"
+
+      TotalCount:
+        type: "integer"
+        description: "总数量"

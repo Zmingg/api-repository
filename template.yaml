@@ -1,0 +1,28 @@
+swagger: '2.0'
+info:
+  title: API Definition Template
+  description: This is a template api definitions
+  version: 1.0.0
+  contact:
+    email: whoami@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+
+paths:
+  /sample-request:
+    get:
+      responses:
+        default:
+          description: Write your descptions here
+          schema:
+            $ref: '#/definitions/Response'
+
+
+definitions:
+  Response:
+    type: object
+    properties:
+      field1:
+        type: string
+        description: Write your descptions here

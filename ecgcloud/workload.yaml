@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  description: 心电采集程序接口规范，Rest风格
+  version: 1.0.0
+  title: 心阅诊断程序接口规范
+  termsOfService: 'http://aecg.com.cn'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+basePath: /diagnose
+schemes:
+  - http
+paths:
+  /statistics/GetWorksByUser:
+    get:
+      tags:
+        - Statisticsworks
+      summary: 个人工作量统计
+      description: ''
+      operationId: GetWorksByUser
+      produces:
+        - application/json
+      parameters:
+        - name: token
+          description: token
+          required: true
+          type: string
+      responses:
+        200:
+          description: '个人工作量统计'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: array
+                    items:
+                      $ref: '#/definitions/StatisticsPersonWorks'
+        '400':
+          description: Invalid Card
+        '403':
+          description: Auth failed
+
+definitions:
+  StatisticsPersonWorks: 
+    type: object
+    description: 工作量统计 
+    properties:
+      Year:
+        type: integer
+        description: 年
+      Month:
+        type: integer
+        format: int32
+        description: 月
+      ReportCount:
+        type: integer
+        description: 工作量

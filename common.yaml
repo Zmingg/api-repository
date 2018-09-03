@@ -1,0 +1,107 @@
+swagger: '2.0'
+info:
+  description: 公共字段定义
+  version: 1.0.0
+  title: Common Fields Definitions
+  contact:
+    email: xuwei@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+
+paths:
+  /sample-request:
+    get:
+      responses:
+        default:
+          description: ''
+          schema:
+            $ref: '#/definitions/Response'
+
+
+definitions:
+  Response:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        x-faker: response.success
+        description: >
+          错误代码
+      msg:
+        type: string
+
+      serverTime:
+        type: integer
+        x-faker: timestamp
+
+  BooleanResponse:
+    allOf:
+    - $ref: '#/definitions/Response'
+    - type: object
+      properties:
+        data:
+          type: boolean
+
+
+  ClassicResponse:
+    type: object
+    properties:
+      Code:
+        type: integer
+        format: int32
+        x-faker: response.success
+        description: >
+          错误代码
+      Msg:
+        type: string
+      Servertime:
+        type: integer
+        x-faker: timestamp
+
+  gender:
+    type: integer
+    enum: [0, 1, 2, 9]
+    description: >
+      性别:
+        - 0 未知的性别
+        - 1 男
+        - 2 女
+        - 9 未说明的性别
+
+  peopleName:
+    type: string
+    description: 姓名
+    maxLength: 50
+    x-faker: name.peopleName
+
+  orgnizationName:
+    type: string
+    description: 机构名称
+    maxLength: 50
+    x-faker: hospital.name
+
+  id:
+    type: number
+    format: long
+    description: 唯一标识符
+
+  Pagination:
+    type: object
+    description: 分页
+    properties:
+      PageIndex:
+        type: number
+        description: 页码
+        x-faker: random.number
+
+      PageSize:
+        type: number
+        description: 每页记录数
+        x-faker: random.number
+
+      Total:
+        type: number
+        description: 总记录数
+        x-faker: random.number

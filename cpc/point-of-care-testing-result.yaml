@@ -1,0 +1,182 @@
+swagger: '2.0'
+info:
+  description: 这是一个快检对接业务 API
+  version: 1.0.0
+  title: 快检清单API
+  termsOfService: 'http:/swagger.io/terms/'
+  contact:
+    email: huanghongshu@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http:/www.aecg.com.cn'
+host: localhost:3001
+basePath: '/OpenAPI'
+tags:
+  - name: POCT
+    description: 快检项目对接业务
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+paths:
+  /PointOfCareTesting/GetPOCTResultPager:
+    post:
+      tags:
+        - POCTResult
+      summary: 快检清单列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              beginUploadTime:
+                type: string
+                description: 开始上传时间
+              endUploadTime:
+                type: string
+                description: 结束上传时间
+              poctDeviceCode:
+                type: string
+                description: 设备类型编码
+              assistCode:
+                type: string
+                description: 辅助检查项编码
+              deviceName:
+                type: string
+                description: 设备名称
+              pageIndex:
+                type: integer
+                description: 表示第几页
+              pageSize:
+                type: integer
+                description: 每页条数
+      responses:
+        200:
+          description: 快检项目列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                    - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                    properties:
+                      List:
+                        type: array
+                        items:
+                          $ref: '#/definitions/POCTResult'
+
+  /PointOfCareTesting/GetPOCTResult:
+    post:
+      tags:
+        - POCTResult
+      summary: 获取快检清单详情
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: 主键
+      responses:
+        200:
+          description: 快检清单详情响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    items:
+                      $ref: '#/definitions/POCTResult'
+
+  /PointOfCareTesting/UpdatePOCTItem:
+    post:
+      tags:
+        - POCTResult
+      summary: 更新快检清单
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              dto:
+                $ref: "#/definitions/POCTResult"
+      responses:
+        200:
+          description: 修改快检清单响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: boolean
+
+
+definitions:
+  POCTResult:
+    type: object
+    description: ''
+    properties:
+      Id:
+        type: integer
+        description: 主键
+      CheckId:
+        type: integer
+        description: 腕带Id或者和医院关联的唯一号
+      Code:
+        type: string
+        description: 项目编码
+      PoctDeviceTypeDicCode:
+        type: string
+        description: 设备类型编码
+      PoctDeviceTypeDicName:
+        type: string
+        description: 设备类型名称
+      AssistItemText:
+        type: string
+        description: 辅助检查项文本(用于展示)
+      AssistItemDicCode:
+        type: string
+        description: 辅助检查项编码
+      AssistItemDicName:
+        type: string
+        description: 辅助检查项名称
+      ResultValue:
+        type: string
+        description: 快检检查结果
+      IsNormal:
+        type: boolean
+        description: 快检结果(阴阳性)
+      DetectionValueText:
+        type: string
+        description: 检测值
+      UploadTime:
+        type: string
+        description: 上传时间
+      DrawBloodTime:
+        type: string
+        description: 抽血时间
+      ReportTime:
+        type: string
+        description: 报告时间
+      IsRelate:
+        type: string
+        description: 是否关联大表单
+      CaseReportId:
+        type: integer
+        description: 表单Id(已关联的情况下)
+      Remark:
+        type: string
+        description: 备注
+      OriginalMessage:
+        type: string
+        description: 报文
+

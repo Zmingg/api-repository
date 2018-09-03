@@ -1,0 +1,1145 @@
+swagger: "2.0"
+info:
+  description: "云平台微信诊断聚合服务"
+  version: "1.0.0"
+  title: "微信诊断聚合服务"
+host: "192.168.5.228:18609"
+basePath: "/cpc"
+tags:
+- name: "user"
+  description: "用户相关的操作"
+- name: "report"
+  description: "报告相关的操作"
+- name: "Lexicon"
+  description: "词库相关"
+schemes:
+- "http"
+paths:
+  /lexicons:
+    get:
+      tags:
+      - "Lexicon"
+      summary: "获取词库列表"
+      description: ""
+      operationId: "getLexicons"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      - name: "takeCount"
+        in: "query"
+        description: "打算获取多少条该用户的词库。超过100条则只取前100条"
+        required: true
+        type: "integer"
+      responses:
+        '200':
+          description: '获取报告Id成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: '#/definitions/LexiconInfo'
+  /reports/{repGuid}:
+    get:
+      tags:
+      - "report"
+      summary: "通过报告Id获取报告详情"
+      description: ""
+      operationId: "getReportById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      responses:
+        '200':
+          description: '获取报告Id成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "object"
+                    $ref: '#/definitions/ReportDetailResponse'
+  /reports/{repGuid}/apply:
+    post:
+      tags:
+      - "report"
+      summary: "受理会诊报告"
+      description: ""
+      operationId: "applyReport"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      responses:
+        '200':
+          description: '受理会诊报告息'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "boolean"
+  /reports/{repGuid}/return:
+    post:
+      tags:
+      - "report"
+      summary: "退回会诊报告"
+      description: ""
+      operationId: "returnReport"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        schema:
+          type: "object"
+          properties: 
+            remark:
+              description: "退回描述，不能为空200字符内"
+              type: "string"
+      responses:
+        '200':
+          description: '退回会诊报告成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "boolean"
+  /reports/{repGuid}/complete:
+    post:
+      tags:
+      - "report"
+      summary: "完成报告"
+      description: ""
+      operationId: "completeReport"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      - name: "body"
+        in: "body"
+        schema:
+          type: "object"
+          properties: 
+            remark:
+              description: "备注，无可不填写"
+              type: "string"
+            reportInfo:
+              description: "报告信息" 
+              type: "object"
+              $ref: '#/definitions/CompleteReportInfo'
+   
+      responses:
+        '200':
+          description: '完成报告成功信息'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "boolean"
+  /reports/{repGuid}/ecg-view-info:
+    get:
+      tags:
+      - "report"
+      summary: "获取心电报告浏览初始化信息"
+      description: ""
+      operationId: "getReportEcgViewInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "dpi"
+        in: "query"
+        description: "dpi"
+        required: true
+        type: "integer"
+      - name: "viewWidth"
+        in: "query"
+        description: "viewWidth"
+        required: true
+        type: "integer"
+      responses:
+        '200':
+          description: '获取心电报告浏览初始化信息成功信息'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "object"
+                    $ref: '#/definitions/EcgViewInitInfo'
+  /reports/{repGuid}/waveform:
+    get:
+      tags:
+      - "report"
+      summary: "获取心电报告浏览追加波形"
+      description: ""
+      operationId: "getReportWaveform"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "X-Access-Token"
+        in: "header"
+        description: "Token"
+        required: true
+        type: "string"
+      - name: "repGuid"
+        in: "path"
+        description: "报告Id"
+        required: true
+        type: "string"
+      - name: "dpi"
+        in: "query"
+        description: "dpi"
+        required: true
+        type: "integer"
+      - name: "viewWidth"
+        in: "query"
+        description: "viewWidth"
+        required: true
+        type: "integer"
+      - name: "offset"
+        in: "query"
+        description: "Offset"
+        required: true
+        type: "integer"
+      - name: "collectItemIndex"
+        in: "query"
+        description: "CollectItemIndex"
+        required: true
+        type: "integer"
+      - name: "waveGain"
+        in: "query"
+        description: "WaveGain"
+        required: true
+        type: "integer"
+      - name: "waveSpeed"
+        in: "query"
+        description: "WaveSpeed"
+        required: true
+        type: "integer"
+      responses:
+        '200':
+          description: '获取心电报告浏览追加波形成功信息'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: '#/definitions/Waveform'
+  /user/wechat-login:
+    get:
+      tags:
+      - "user"
+      summary: "通过微信的方式登录"
+      description: ""
+      operationId: "wechatLogin"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "openId"
+        in: "query"
+        description: "微信openId"
+        required: true
+        type: "string"
+      - name: "unionId"
+        in: "query"
+        description: "微信unionId"
+        required: true
+        type: "string"     
+      responses:
+        '200':
+          description: '微信登录成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "object"
+                    $ref: '#/definitions/User'
+  /user/login:
+    get:
+      tags:
+      - "user"
+      summary: "普通方式登录"
+      description: ""
+      operationId: "userLogin"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userName"
+        in: "query"
+        description: "用户名"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "密码"
+        required: true
+        type: "string"
+      - name: "openId"
+        in: "query"
+        description: "openId，若获取不到，可不传"
+        type: "string"
+      - name: "unionId"
+        in: "query"
+        description: "unionId，若获取不到，可不传"
+        type: "string"
+      responses:
+        '200':
+          description: '普通登录成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "object"
+                    $ref: '#/definitions/User'
+  /user/bind-wechat:
+    post:
+      tags:
+      - "user"
+      summary: "微信和用户关系绑定"
+      description: ""
+      operationId: "bindUserWechat"
+      produces:
+      - "application/json"
+      parameters:
+      - in: body
+        name: "body"
+        schema:
+          type: "object"
+          properties: 
+            userId:
+              description: "用户Id"
+              type: string
+            openId:
+              description: "微信Id"
+              type: string
+            unionId:
+              description: "微信Id"
+              type: string
+      responses:
+        '200':
+          description: '微信和用户关系绑定成功'
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  data:
+                    type: "boolean"
+
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "用户Id"
+      openId:
+        type: "string"
+        description: "微信openId"
+      unionId:
+        type: "string"
+        description: "微信unionId"
+      username:
+        type: "string"
+        description: "用户名"
+      token:
+        type: "string"
+        description: "用户Token"
+  ReportDetailResponse:
+    type: "object"
+    properties:
+      diagDoctorSign:
+        type: "string"
+        format: ""
+      reportInfo:
+        $ref: "#/definitions/BaseReportDetail"
+      collectList:
+        type: array
+        items:
+          $ref: '#/definitions/CollectItem'
+      reportExtends:
+        type: array
+        items:
+          $ref: '#/definitions/BaseAdditional'     
+  BaseReportDetail:
+    type: "object"
+    properties:
+      reportStatus:
+        type: "integer"
+        format: "int32"
+        description: "报告状态"
+      collectItemOffsetMs:
+        type: "integer"
+        format: "int32"
+        description: "偏移量"
+      collectItemIndex:
+        type: "integer"
+        format: "int32"
+        description: "诊断图谱索引（从0开始）"
+      collectItemBaseLine:
+        type: "integer"
+        format: "int32"
+        description: "基线"
+      collectItemNotch:
+        type: "integer"
+        format: "int32"
+        description: "工频"
+      collectItemLowPass:
+        type: "integer"
+        format: "int32"
+        description: "低通"
+      isUrgent:
+        type: "boolean"
+        description: "是否加急"
+      repCreateTime:
+        type: "string"
+        description: "报告创建时间"
+      repUrgentTime:
+        type: "string"
+        description: "报告加急时间"
+      applyTime:
+        type: "string"
+        description: "申请会诊时间"
+      operationFlags:
+        type: "string"
+        description: "报告可操作标识（仅诊断端App需要）"
+      typicalCaseReportTag:
+        type: "string"
+        description: "典型病例报告标签（仅诊断端App需要）"
+      sendBackReason:
+        type: "string"
+        description: "退回原因"
+      reportType:
+        type: "integer"
+        format: "int32"
+        description: "1危急值 2协诊 3正常 9不可识别 6需预警"
+      targetType:
+        type: "integer"
+        format: "int32"
+        description: "0默认 1初始值 2协诊 4会诊"
+      repGuid:
+        type: "string"
+        description: "报告Id"
+      patName:
+        type: "string"
+        description: "病人姓名"
+      patIDCardNo:
+        type: "string"
+        description: "身份证号码（需解密）"
+      patGender:
+        type: "string"
+        description: "性别"
+      patAge:
+        type: "string"
+        description: "年龄"
+      address:
+        type: "string"
+        description: "病人姓名"
+      tel:
+        type: "string"
+        description: "电话"
+      medCardNo:
+        type: "string"
+        description: "医疗卡号"
+      national:
+        type: "string"
+        description: "民族"
+      diagnosticCenterId:
+        type: "string"
+        description: "诊断中心Id"
+      diagnosticCenterName:
+        type: "string"
+        description: "诊断中心名称"
+      applyDepartment:
+        type: "string"
+        description: "申请部门"
+      applyDoctor:
+        type: "string"
+        description: "申请医生"
+      hospCode:
+        type: "string"
+        description: "住院号"
+      bedNumber:
+        type: "string"
+        description: "床号"
+      wardName:
+        type: "string"
+        description: "病区"
+      examDoctorId:
+        type: "string"
+        description: "检查医生Id"
+      examDoctorName:
+        type: "string"
+        description: "检查医生名称"
+      examDate:
+        type: "string"
+        description: "检查时间"
+      diagDoctorName:
+        type: "string"
+        description: "诊断医生名称"
+      diagOrgName:
+        type: "string"
+        description: "诊断机构Id"
+      diagOrgCode:
+        type: "string"
+        description: "诊断机构Code"
+      diagDate:
+        type: "string"
+        description: "诊断时间"
+      repDescription:
+        type: "string"
+        description: "描述"
+      repDiagnose:
+        type: "string"
+        description: "诊断"
+      fCGDiagnose:
+        type: "string"
+        description: "频谱心电诊断结果"
+      hCGDiagnose:
+        type: "string"
+        description: "高频心电诊断结果"
+      hRTDiagnose:
+        type: "string"
+        description: "心率震荡诊断结果"
+      hRVDiagnose:
+        type: "string"
+        description: "心率变异诊断结果"
+      singleLeadDiagnose:
+        type: "string"
+        description: "心电事件诊断结果"
+      vCGDiagnose:
+        type: "string"
+        description: "心电向量诊断结果"
+      vLPDiagnose:
+        type: "string"
+        description: "晚电位诊断结果"
+      clinicDiagnose:
+        type: "string"
+        description: "临床诊断"
+      extendType:
+        type: "string"
+        description: "信标类别，对应报告病人表中的SignalType"
+      extendTag:
+        type: "string"
+        description: "信标值，对应报告病人表中的SignalNumber"
+      repCodeType:
+        type: "string"
+        description: "报告 小类别"
+      repCodeMainType:
+        type: "string"
+        description: "报告 大类别"
+      diagDrId:
+        type: "string"
+        description: "诊断医生Id（归档使用）"
+      deviceName:
+        type: "string"
+        description: "设备名称（归档使用）"
+      deviceId:
+        type: "string"
+        description: "设备Id（归档使用）"
+      examOrgId:
+        type: "string"
+        description: "检查机构Id（归档使用）"
+      examOrgCode:
+        type: "string"
+        description: "检查机构Code（归档使用）"
+      examOrgName:
+        type: "string"
+        description: "检查机构名称（归档使用）"
+      checkProject:
+        type: "string"
+        description: "检查项目"
+      patientType:
+        type: "integer"
+        format: "int32"
+        description: "0未知类型 1急诊 2住院 3体检 4门诊 5绿色通道"
+      eventMarks:
+        type: "string"
+        description: "事件标记（仅院内使用）"
+      electrolyticInfo:
+        type: "string"
+        description: "电解质信息"
+      medicalHistory:
+        type: "string"
+        description: "病史"
+      chiefComplaint:
+        type: "string"
+        description: "病例主诉"
+      hR:
+        type: "integer"
+        format: "int32"
+        description: "心率"
+      qRSaxis:
+        type: "integer"
+        format: "int32"
+        description: "QRSaxis"
+      p:
+        type: "integer"
+        format: "int32"
+        description: "P波时限"
+      pR:
+        type: "integer"
+        format: "int32"
+        description: "PR间期"
+      qRS:
+        type: "integer"
+        format: "int32"
+        description: "QRS间期"
+      qT:
+        type: "integer"
+        format: "int32"
+        description: "QT间期"
+      qTC:
+        type: "integer"
+        format: "int32"
+        description: ""
+      t:
+        type: "integer"
+        format: "int32"
+        description: "T波时限"
+      sV1:
+        type: "number"
+        format: "float"
+        description: "SV1"
+      rV5:
+        type: "number"
+        format: "float"
+        description: "RV5"
+      sV5:
+        type: "number"
+        format: "float"
+        description: "SV5"
+      rV1:
+        type: "number"
+        format: "float"
+        description: "RV1"
+      sV2:
+        type: "number"
+        format: "float"
+        description: "SV2"
+      rV6:
+        type: "number"
+        format: "float"
+        description: "RV6"
+      paxis:
+        type: "integer"
+        format: "int32"
+        description: "P波电轴"
+      taxis:
+        type: "integer"
+        format: "int32"
+        description: "T波电轴"
+      atrialRate:
+        type: "integer"
+        format: "int32"
+        description: "心房率"
+      ventricularRate:
+        type: "integer"
+        format: "int32"
+        description: "心室率"
+      flagSTEMI:
+        type: "integer"
+        description: "阴阳性，0未知 1阳性 2阴性" 
+  CollectItem:
+    type: "object"
+    properties:
+      createDate:
+        type: "string"
+        description: "采集时间 格式：yyyy-MM-dd HH:mm:ss"
+      samplePerSecond:
+        type: "integer"
+        format: "int32"
+        description: "采样率"
+      avm:
+        type: "number"
+        format: "float"
+        description: "灵敏度"
+      ecgData:
+        type: "string"
+        description: "心电图数据"
+      leadNum:
+        type: "integer"
+        format: "int32"
+        description: "导联数量"
+      leadNameList:
+        type: array
+        items:
+          type: "string"
+        description: "导联集合 String[]，以“,”隔开"
+      compressionMode:
+        type: "integer"
+        format: "int32"
+        description: "压缩模式"
+      eventMarks:
+        type: array
+        items:
+          $ref: '#/definitions/EventMarks'
+      hR:
+        type: "integer"
+        format: "int32"
+        description: "心率"
+      qRSaxis:
+        type: "integer"
+        format: "int32"
+        description: "QRSaxis"
+      p:
+        type: "integer"
+        format: "int32"
+        description: "P波时限"
+      pR:
+        type: "integer"
+        format: "int32"
+        description: "PR间期"
+      qRS:
+        type: "integer"
+        format: "int32"
+        description: "QRS间期"
+      qT:
+        type: "integer"
+        format: "int32"
+        description: "QT间期"
+      qTC:
+        type: "integer"
+        format: "int32"
+        description: ""
+      t:
+        type: "integer"
+        format: "int32"
+        description: "T波时限"
+      sV1:
+        type: "number"
+        format: "float"
+        description: "SV1"
+      rV5:
+        type: "number"
+        format: "float"
+        description: "RV5"
+      sV5:
+        type: "number"
+        format: "float"
+        description: "SV5"
+      rV1:
+        type: "number"
+        format: "float"
+        description: "RV1"
+      sV2:
+        type: "number"
+        format: "float"
+        description: "SV2"
+      rV6:
+        type: "number"
+        format: "float"
+        description: "RV6"
+      paxis:
+        type: "integer"
+        format: "int32"
+        description: "P波电轴"
+      taxis:
+        type: "integer"
+        format: "int32"
+        description: "T波电轴"
+      atrialRate:
+        type: "integer"
+        format: "int32"
+        description: "心房率"
+      ventricularRate:
+        type: "integer"
+        format: "int32"
+        description: "心室率"        
+  EventMarks:
+    type: "object"
+    properties:
+      time:
+        type: "integer"
+        format: "int32"
+        description: ""
+      mark:  
+        type: "string"
+        description: ""
+  BaseAdditional:
+    type: "object"
+    properties:
+      id:  
+        type: "string"
+        description: ""
+      reportId:  
+        type: "string"
+        description: ""
+      title:  
+        type: "string"
+        description: ""
+      type:  
+        type: "string"
+        description: ""
+      content:  
+        type: "string"
+        description: ""
+      createTime:  
+        type: "string"
+        description: ""
+  CompleteReportInfo:
+    type: "object"
+    properties:
+      repGuid:
+        type: "string"
+        description: "报告主键"
+      clinicDiagnose:
+        type: "string"
+        description: "临床诊断"
+      collectItemIndex:
+        type: "integer"
+        format: "int32"
+        description: "诊断的是第几份图谱"
+      collectItemOffsetMS:
+        type: "integer"
+        format: "int32"
+        description: "诊断图谱的开始时间（毫秒）"
+      collectItemBaseLine:
+        type: "integer"
+        format: "int32"
+        description: "基线"
+      collectItemNotch:
+        type: "integer"
+        format: "int32"
+        description: "工频"
+      collectItemLowPass:
+        type: "integer"
+        format: "int32"
+        description: "低通"
+      diagDate:
+        type: "string"
+        description: "诊断时间"
+      repDescription:
+        type: "string"
+        description: "描述"
+      repDiagnose:
+        type: "string"
+        description: "诊断"
+      fCGDiagnose:
+        type: "string"
+        description: "频谱心电诊断结果"
+      hCGDiagnose:
+        type: "string"
+        description: "高频心电诊断结果"
+      hRTDiagnose:
+        type: "string"
+        description: "心率震荡诊断结果"
+      hRVDiagnose:
+        type: "string"
+        description: "心率变异诊断结果"
+      singleLeadDiagnose:
+        type: "string"
+        description: "心电事件诊断结果"
+      vCGDiagnose:
+        type: "string"
+        description: "心电向量诊断结果"
+      vLPDiagnose:
+        type: "string"
+        description: "晚电位诊断结果"
+      hR:
+        type: "integer"
+        format: "int32"
+        description: "心率"
+      qRSaxis:
+        type: "integer"
+        format: "int32"
+        description: "QRSaxis"
+      p:
+        type: "integer"
+        format: "int32"
+        description: "P波时限"
+      pR:
+        type: "integer"
+        format: "int32"
+        description: "PR间期"
+      qRS:
+        type: "integer"
+        format: "int32"
+        description: "QRS间期"
+      qT:
+        type: "integer"
+        format: "int32"
+        description: "QT间期"
+      qTC:
+        type: "integer"
+        format: "int32"
+        description: ""
+      t:
+        type: "integer"
+        format: "int32"
+        description: "T波时限"
+      sV1:
+        type: "number"
+        format: "float"
+        description: "SV1"
+      rV5:
+        type: "number"
+        format: "float"
+        description: "RV5"
+      sV5:
+        type: "number"
+        format: "float"
+        description: "SV5"
+      rV1:
+        type: "number"
+        format: "float"
+        description: "RV1"
+      sV2:
+        type: "number"
+        format: "float"
+        description: "SV2"
+      rV6:
+        type: "number"
+        format: "float"
+        description: "RV6"
+      paxis:
+        type: "integer"
+        format: "int32"
+        description: "P波电轴"
+      taxis:
+        type: "integer"
+        format: "int32"
+        description: "T波电轴"
+      atrialRate:
+        type: "integer"
+        format: "int32"
+        description: "心房率"
+      ventricularRate:
+        type: "integer"
+        format: "int32"
+        description: "心室率" 
+      flagSTEMI:
+        type: "integer"
+        description: "阴阳性 0未知 1阳性 2阴性" 
+  EcgViewInitInfo:
+    type: "object"
+    properties:
+      shareInfo:
+        type: array
+        items:
+          type: "string"
+        description: "ShareInfo"
+      currentShareIndex:
+        type: "integer"
+        format: "int32"
+        description: ""
+      reportInfo:
+        $ref: '#/definitions/EcgReportInfo'
+      waveforms:
+        $ref: '#/definitions/Waveforms'      
+  EcgReportInfo:
+    type: "object"
+    properties:
+      patName:
+        type: "string"
+        description: ""
+      patGender:
+        type: "string"
+        description: ""
+      patAge:
+        type: "string"
+        description: ""
+      hospCode:
+        type: "string"
+        description: ""
+      applyDepartment:
+        type: "string"
+        description: ""
+      applyDoctor:
+        type: "string"
+        description: ""
+      wardName:
+        type: "string"
+        description: ""
+      bedNumber:
+        type: "string"
+        description: ""
+      createDate:
+        type: "string"
+        description: ""
+      repCreator:
+        type: "string"
+        description: ""
+      repDate:
+        type: "string"
+        description: ""
+      reporter:
+        type: "string"
+        description: ""
+      hR:
+        type: "string"
+        description: ""
+      qRSaxis:
+        type: "string"
+        description: ""
+      p:
+        type: "string"
+        description: ""    
+      pR:
+        type: "string"
+        description: ""
+      qRS:
+        type: "string"
+        description: ""
+      qT:
+        type: "string"
+        description: ""
+      qTc:
+        type: "string"
+        description: ""
+      t:
+        type: "string"
+        description: ""
+      sV1:
+        type: "string"
+        description: ""      
+      rV5:
+        type: "string"
+        description: ""
+      repDescription:
+        type: "string"
+        description: ""      
+      repDiagnose:
+        type: "string"
+        description: ""
+  Waveforms:
+    type: "object"
+    properties:
+      wavesStartTime:
+        type: "string"
+        description: ""
+      waveformCollection:
+        type: array
+        items:
+          $ref: '#/definitions/Waveform'
+      viewParameter:
+        type: object
+        $ref: '#/definitions/ViewParameter'
+  Waveform:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        description: ""
+      header:
+        type: array
+        items:
+          type: "string"
+      wave:
+        type: array
+        items:
+          type: "string"
+      headerWidth:
+        type: "number"
+        format: "double"
+        description: ""
+  ViewParameter:
+    type: "object"
+    properties:
+      gridType:
+        type: "integer"
+        format: "int32"
+        description: ""
+      gain:
+        type: "integer"
+        format: "int32"
+        description: ""
+      speed:
+        type: "integer"
+        format: "int32"
+        description: ""
+      dPI:
+        type: "number"
+        format: "float"
+        description: ""
+
+  LexiconInfo:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "主键"
+      content:
+        type: "string"
+        description: "词库内容"
+      qty:
+        type: "integer"
+        format: "int32"
+        description: "使用次数"
+        
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

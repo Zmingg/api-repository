@@ -1,0 +1,197 @@
+swagger: '2.0'
+info:
+  description: 时间采集器 定位点(基站位置)管理 API
+  version: 1.0.0
+  title: 时间采集器 Web API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: zhangyun@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+host: 'www.aecg.com.cn:3002'
+basePath: /OpenAPI
+tags:
+  - name: TimeCollect
+    description: 胸痛时间采集器业务
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+paths:
+
+  /AnchorPosition/GetAnchorPositionPager:
+    post:
+      tags:
+        - AnchorPosition
+      summary: 定位点(基站位置)列表
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              queryAnchorPosition:
+                type: object
+                description: 定位点(基站位置)名称
+                properties:
+                  Name:
+                    type: string
+                    description: 定位点(基站位置)名称
+                  PageSize:
+                    type: integer
+                    description: 每页条数
+                  PageIndex:
+                    type: integer
+                    description: 表示第几页
+      responses:
+        '200':
+          description: 定位点(基站位置)列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    allOf:
+                      - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/Pagination'
+                    properties:
+                      List:
+                        type: array
+                        items:
+                          $ref: '#/definitions/AnchorPosition'
+
+  /AnchorPosition/GetAnchorPosition:
+    post:
+      tags:
+        - AnchorPosition
+      summary: 查询定位点(基站位置)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 定位点(基站位置)主键
+      responses:
+        '200':
+          description: 定位点(基站位置)查询响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    allOf:
+                      - $ref: '#/definitions/AnchorPosition'
+                      - description: 定位点(基站位置)
+
+  /AnchorPosition/AddAnchorPosition:
+    post:
+      tags:
+        - AnchorPosition
+      summary: 新增定位点(基站位置)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              anchorPosition:
+                type: object
+                properties:
+                  ShortName:
+                    type: string
+                    description: 定位点(基站位置)名称
+                  AnchorPositionDes:
+                    type: string
+                    description: 定位点(基站位置)描述
+      responses:
+        '200':
+          description: 定位点新增响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+  /AnchorPosition/UpdateAnchorPosition:
+    post:
+      tags:
+        - AnchorPosition
+      summary: 编辑定位点(基站位置)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              anchorPosition:
+                type: object
+                properties:
+                  Id:
+                    type: string
+                    description: 定位点(基站位置)主键
+                  ShortName:
+                    type: string
+                    description: 定位点(基站位置)名称
+                  AnchorPositionDes:
+                    type: string
+                    description: 定位点(基站位置)描述
+      responses:
+        '200':
+          description: 定位点(基站位置)编辑响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+  /AnchorPosition/DeleteAnchorPosition:
+    post:
+      tags:
+        - AnchorPosition
+      summary: 删除定位点(基站位置)
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 定位点(基站位置)主键
+      responses:
+        '200':
+          description: 定位点(基站位置)删除响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: string
+                    description: 返回的冗余数据，可以为空null
+
+
+definitions:
+
+  AnchorPosition:
+    type: object
+    description: '定位点(基站位置)返回列表对象'
+    properties:
+      Id:
+        type: string
+        description: 唯一标识Id
+      ShortName:
+        type: string
+        description: 定位点(基站位置)名称
+      AnchorPositionDes:
+        type: string
+        description: 定位点(基站位置)描述

@@ -1,0 +1,87 @@
+swagger: '2.0'
+info:
+  description: 胸痛档案时间轴 API
+  version: 1.0.0
+  title: Cppmas Web API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: zhangyun@aecg.com.cn
+  license:
+    name: Copyright
+    url: 'http://www.aecg.com.cn'
+host: 'www.aecg.com.cn:3002'
+basePath: /StatisticsOpenAPI
+tags:
+  - name: EmergencyTime
+    description: 胸痛时间轴业务
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+paths:
+
+  /EmergencyTime/GetEmergencyTimes:
+    post:
+      tags:
+        - EmergencyTime
+      summary: 时间轴
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 胸痛档案ID
+      responses:
+        '200':
+          description: 区域列表响应
+          schema:
+            allOf:
+              - $ref: 'http://apispec.aecg.com.cn/schemas/common.yaml#/definitions/ClassicResponse'
+              - properties:
+                  Data:
+                    type: object
+                    description: 数据
+                    properties:
+                      PatientName:
+                        type: string
+                        description: 患者姓名
+                      List:
+                        type: array
+                        items:
+                          $ref: '#/definitions/EmergencyTime'
+
+definitions:
+
+  EmergencyTime:
+    type: object
+    properties:
+      FieldName:
+        type: string
+        description: 英文字段名
+      FieldNameRefer:
+        type: string
+        description: 英文字段名索引
+      NodeName:
+        type: string
+        description: 节点名称
+      TimeValue:
+        type: string
+        description: 时间
+      ShowTime:
+        type: string
+        description: 显示时间
+      IsDelay:
+        type: string
+        description: 是否延期
+      AuthItemDesc:
+        type: string
+        description: 权限描述
+      TimeSlotDesc:
+        type: string
+        description: 时间位置描述
+
