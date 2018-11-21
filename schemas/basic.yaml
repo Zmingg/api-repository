@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   description: GG API Repository
   version: 1.0.0
-  title: GG API
+  title: Basic API
   contact:
     email: zmingg@outlook.com
 host: zmingg.com
